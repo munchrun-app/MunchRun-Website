@@ -6,6 +6,7 @@ header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 header h1 {
@@ -52,4 +53,17 @@ footer {
   position: fixed;
   bottom: 0;
   width: 100%;
+}
+
+nav > ul > li {
+  padding: 1rem;
+  transition: all 0.3s ease;
+  border-radius: 15rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+nav > ul > li:hover {
+  background-color: #0099cc;
+  color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
