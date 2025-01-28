@@ -1,0 +1,26 @@
+{
+    "short_name": "MunchRun",
+    "name": "MunchRun - Fair Food Delivery",
+    "description": "MunchRun is a new food delivery platform in Melbourne, offering fair pay for drivers, zero commissions for restaurants, and a great experience for customers.",
+    "icons": [
+      {
+        "src": "favicon.ico",
+        "sizes": "64x64 32x32 24x24 16x16",
+        "type": "image/x-icon"
+      },
+      {
+        "src": "logo192.png",
+        "type": "image/png",
+        "sizes": "192x192"
+      },
+      {
+        "src": "logo512.png",
+        "type": "image/png",
+        "sizes": "512x512"
+      }
+    ],
+    "start_url": ".",
+    "display": "standalone",
+    "theme_color": "#0bbbeb",
+    "background_color": "#ffffff"
+  }
