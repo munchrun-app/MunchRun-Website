@@ -1,0 +1,8 @@
+html {
+  scroll-behavior: smooth;
+}
+
+/* Add padding to section targets to account for fixed headers */
+:target {
+  scroll-margin-top: 4rem;
+}
