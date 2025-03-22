@@ -4,6 +4,8 @@ import './App.css';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import SEOHelmet from './components/SEOHelmet';
+import ErrorBoundary from './components/ErrorBoundary';
+import { ThemeProvider } from './contexts/ThemeContext';
 
 // Import your page components
 import HomePage from './components/HomePage';
@@ -12,7 +14,63 @@ import DriversPage from './components/DriversPage';
 import RestaurantsPage from './components/RestaurantsPage';
 import ContactPage from './components/ContactPage';
 import FAQPage from './components/FAQPage';
-// Import any other page components you have
+import NotFoundPage from './components/NotFoundPage';
+
+// These components need to be inside Router
+const AppContent = () => {
+  return (
+    <div className="App">
+      <ScrollToTop />
+      <RouteBasedSEO />
+      <ErrorBoundary>
+        <Header />
+      </ErrorBoundary>
+      <main>
+        <Routes>
+          <Route path="/" element={
+            <ErrorBoundary>
+              <HomePage />
+            </ErrorBoundary>
+          } />
+          <Route path="/about" element={
+            <ErrorBoundary>
+              <AboutPage />
+            </ErrorBoundary>
+          } />
+          <Route path="/drivers" element={
+            <ErrorBoundary>
+              <DriversPage />
+            </ErrorBoundary>
+          } />
+          <Route path="/restaurants" element={
+            <ErrorBoundary>
+              <RestaurantsPage />
+            </ErrorBoundary>
+          } />
+          <Route path="/contact" element={
+            <ErrorBoundary>
+              <ContactPage />
+            </ErrorBoundary>
+          } />
+          <Route path="/faq" element={
+            <ErrorBoundary>
+              <FAQPage />
+            </ErrorBoundary>
+          } />
+          {/* 404 route - must be the last route */}
+          <Route path="*" element={
+            <ErrorBoundary>
+              <NotFoundPage />
+            </ErrorBoundary>
+          } />
+        </Routes>
+      </main>
+      <ErrorBoundary>
+        <Footer />
+      </ErrorBoundary>
+    </div>
+  );
+};
 
 // ScrollToTop component to scroll to top on route change
 function ScrollToTop() {
@@ -88,30 +146,44 @@ function RouteBasedSEO() {
       break;
   }
   
+  // Add 404 SEO configuration
+  if (pathname === '*' || (!Object.keys(seoProps).includes(pathname))) {
+    seoProps = {
+      ...seoProps,
+      title: 'Page Not Found | MunchRun',
+      description: 'The page you are looking for does not exist. Browse our website to discover MunchRun\'s fair and transparent food delivery service in Melbourne.',
+      noindex: true, // Tell search engines not to index 404 pages
+    };
+  }
+  
   return <SEOHelmet {...seoProps} />;
 }
 
 function App() {
+  // Initialize theme before React takes over
+  React.useEffect(() => {
+    try {
+      const savedTheme = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const initialTheme = savedTheme || (prefersDark ? 'dark' : 'light');
+      
+      document.documentElement.setAttribute('data-theme', initialTheme);
+      document.documentElement.classList.toggle('dark', initialTheme === 'dark');
+      
+      console.log('Initial theme set at App root:', initialTheme);
+    } catch (e) {
+      console.error('Error setting initial theme:', e);
+    }
+  }, []);
+  
   return (
-    <Router>
-      <div className="App">
-        <ScrollToTop />
-        <RouteBasedSEO />
-        <Header />
-        <main>
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/about" element={<AboutPage />} />
-            <Route path="/drivers" element={<DriversPage />} />
-            <Route path="/restaurants" element={<RestaurantsPage />} />
-            <Route path="/contact" element={<ContactPage />} />
-            <Route path="/faq" element={<FAQPage />} />
-            {/* Add other routes as needed */}
-          </Routes>
-        </main>
-        <Footer />
-      </div>
-    </Router>
+    <ErrorBoundary>
+      <ThemeProvider>
+        <Router>
+          <AppContent />
+        </Router>
+      </ThemeProvider>
+    </ErrorBoundary>
   );
 }
 
