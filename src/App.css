@@ -22,6 +22,8 @@ main {
     outline: 2px solid #0bbbeb;
     outline-offset: 2px;
   }
+  padding-top: 4rem; /* Adjust based on header height */
+  min-height: calc(100vh - 4rem - 300px); /* Adjust based on footer height */
 }
 
 section {
@@ -188,4 +190,18 @@ img {
 /* Ensure text remains visible during webfont load */
 html {
   font-display: swap;
+}
+
+/* Theme transition for smoother theme changes */
+.theme-transition {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+.theme-transition * {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Override DaisyUI checkbox behavior in collapses */
+.collapse-arrow .collapse-title:after {
+  pointer-events: none;
 }
