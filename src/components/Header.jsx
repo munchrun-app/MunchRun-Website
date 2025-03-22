@@ -1,136 +1,152 @@
-import React from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { ThemeContext } from '../contexts/ThemeContext';
 
 function Header() {
   const location = useLocation();
+  
+  // Access theme context safely with fallback
+  const themeContext = useContext(ThemeContext);
+  const theme = themeContext?.theme || 'light';
+  const toggleTheme = themeContext?.toggleTheme || (() => {
+    console.warn('Theme toggle not available, using fallback');
+    // Fallback direct toggle if context method fails
+    const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+    const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', newTheme);
+    document.documentElement.classList.toggle('dark', newTheme === 'dark');
+    localStorage.setItem('theme', newTheme);
+  });
+  
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
 
   // Function to check if a path is active
   const isActive = (path) => {
     return location.pathname === path;
   };
 
+  // Handle scroll event to change header style
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+    };
+    
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Close mobile menu when navigating to a new page
+  useEffect(() => {
+    setIsMenuOpen(false);
+  }, [location]);
+
   return (
-    <header className="fixed top-0 w-full z-50">
+    <header className={`fixed top-0 w-full z-50 transition-all duration-300 ${isScrolled ? 'bg-base-100 shadow-md' : 'bg-base-100/90 backdrop-blur-sm'}`}>
       {/* Coming Soon Banner */}
       <div className="bg-secondary text-secondary-content py-1 text-center text-sm font-bold" role="alert">
         <span aria-hidden="true">🚧</span> MunchRun is currently in early planning stages <span aria-hidden="true">🚧</span>
       </div>
       
-      {/* Main Navbar - using DaisyUI navbar component */}
-      <nav className="navbar bg-base-100 shadow-md">
+      {/* Main Navbar */}
+      <nav className="navbar bg-base-100 container mx-auto">
         <div className="navbar-start">
-          <div className="dropdown">
-            <label tabIndex={0} role="button" className="btn btn-ghost lg:hidden" aria-label="Open menu">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h8m-8 6h16" />
-              </svg>
-            </label>
-            <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52" role="menu">
-              <li role="menuitem">
-                <Link to="/about" className={isActive('/about') ? 'active' : ''}>
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  About
-                </Link>
-              </li>
-              <li role="menuitem">
-                <Link to="/drivers" className={isActive('/drivers') ? 'active' : ''}>
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" />
-                  </svg>
-                  Drivers
-                </Link>
-              </li>
-              <li role="menuitem">
-                <Link to="/restaurants" className={isActive('/restaurants') ? 'active' : ''}>
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                  </svg>
-                  Restaurants
-                </Link>
-              </li>
-              <li role="menuitem">
-                <Link to="/contact" className={isActive('/contact') ? 'active' : ''}>
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                  </svg>
-                  Contact
-                </Link>
-              </li>
-              <li className="mt-2" role="menuitem">
-                <a href="mailto:contact@munchrun.com.au" className="btn btn-primary btn-sm justify-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-4l-4 4z" />
-                  </svg>
-                  Contact Us
-                </a>
-              </li>
-            </ul>
-          </div>
-          <Link to="/" className="btn btn-ghost normal-case text-xl" aria-label="MunchRun Home">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-1 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-            </svg>
-            <span className="text-primary font-bold">Munch</span>
-            <span className="font-bold">Run</span>
+          <Link to="/" className="flex items-center gap-2 text-2xl font-bold">
+            <img 
+              src="/logo-small.png" 
+              alt="MunchRun Logo" 
+              className="h-10 w-auto"
+              onError={(e) => {e.target.onerror = null; e.target.src = 'https://placehold.co/40?text=MR'}}
+            />
+            <span><span className="text-primary">Munch</span>Run</span>
           </Link>
         </div>
-        
-        {/* Fixed navbar-center section */}
+
+        {/* Desktop navigation links */}
         <div className="navbar-center hidden lg:flex">
-          <ul className="menu menu-horizontal px-1" role="menubar">
-            <li role="menuitem">
-              <Link to="/about" className={isActive('/about') ? 'active' : ''}>
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                About
-              </Link>
+          <ul className="menu menu-horizontal px-1 gap-1">
+            <li>
+              <Link to="/" className={isActive('/') ? 'active font-bold' : ''}>Home</Link>
             </li>
-            <li role="menuitem">
-              <Link to="/drivers" className={isActive('/drivers') ? 'active' : ''}>
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" />
-                </svg>
-                Drivers
-              </Link>
+            <li>
+              <Link to="/about" className={isActive('/about') ? 'active font-bold' : ''}>About</Link>
             </li>
-            <li role="menuitem">
-              <Link to="/restaurants" className={isActive('/restaurants') ? 'active' : ''}>
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                </svg>
-                Restaurants
-              </Link>
+            <li>
+              <Link to="/drivers" className={isActive('/drivers') ? 'active font-bold' : ''}>Drivers</Link>
             </li>
-            <li role="menuitem">
-              <Link to="/contact" className={isActive('/contact') ? 'active' : ''}>
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                </svg>
-                Contact
-              </Link>
+            <li>
+              <Link to="/restaurants" className={isActive('/restaurants') ? 'active font-bold' : ''}>Restaurants</Link>
+            </li>
+            <li>
+              <Link to="/contact" className={isActive('/contact') ? 'active font-bold' : ''}>Contact</Link>
+            </li>
+            <li>
+              <Link to="/faq" className={isActive('/faq') ? 'active font-bold' : ''}>FAQ</Link>
             </li>
           </ul>
         </div>
-        
-        {/* Fixed navbar-end section */}
+
         <div className="navbar-end">
-          <a 
-            href="mailto:contact@munchrun.com.au" 
-            className="btn btn-primary btn-sm hidden lg:flex gap-2"
-            aria-label="Email us"
+          {/* Dark mode toggle button */}
+          <button 
+            onClick={toggleTheme}
+            className="btn btn-ghost btn-circle"
+            aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+            data-testid="theme-toggle"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-4l-4 4z" />
-            </svg>
-            Contact Us
-          </a>
+            {theme === 'dark' ? (
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+              </svg>
+            ) : (
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+              </svg>
+            )}
+          </button>
+
+          {/* Mobile menu toggle button */}
+          <button
+            className="btn btn-ghost lg:hidden ml-2"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
+          >
+            {isMenuOpen ? (
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            ) : (
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            )}
+          </button>
         </div>
       </nav>
+
+      {/* Mobile navigation menu */}
+      <div className={`lg:hidden transition-all duration-300 overflow-hidden ${isMenuOpen ? 'max-h-96' : 'max-h-0'}`}>
+        <ul className="menu menu-vertical p-4 bg-base-100 shadow-lg">
+          <li>
+            <Link to="/" className={isActive('/') ? 'active font-bold' : ''}>Home</Link>
+          </li>
+          <li>
+            <Link to="/about" className={isActive('/about') ? 'active font-bold' : ''}>About</Link>
+          </li>
+          <li>
+            <Link to="/drivers" className={isActive('/drivers') ? 'active font-bold' : ''}>Drivers</Link>
+          </li>
+          <li>
+            <Link to="/restaurants" className={isActive('/restaurants') ? 'active font-bold' : ''}>Restaurants</Link>
+          </li>
+          <li>
+            <Link to="/contact" className={isActive('/contact') ? 'active font-bold' : ''}>Contact</Link>
+          </li>
+          <li>
+            <Link to="/faq" className={isActive('/faq') ? 'active font-bold' : ''}>FAQ</Link>
+          </li>
+        </ul>
+      </div>
     </header>
   );
 }
