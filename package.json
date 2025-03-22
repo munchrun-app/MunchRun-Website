@@ -4,11 +4,11 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "npm run generate-sitemap && vite build",
-    "lint": "eslint .",
+    "dev": "npm run ensure-platform-deps && vite",
+    "deploy": "npm run ensure-platform-deps && npm run build",
+    "build": "npm run generate-sitemap && NODE_OPTIONS=\"--max-old-space-size=4096\" vite build",
+    "ensure-platform-deps": "node src/scripts/ensure-platform-deps.js",
     "preview": "vite preview",
-    "deploy": "npm run generate-sitemap && vite build && gh-pages -d dist",
     "generate-sitemap": "node src/scripts/generate-sitemap.cjs",
     "standard": "standard --fix"
   },
@@ -36,5 +36,11 @@
     "globals": "^15.14.0",
     "standard": "^17.1.2",
     "vite": "^6.0.5"
+  },
+  "overrides": {
+    "rollup": {
+      "@rollup/rollup-linux-x64-gnu": "npm:@rollup/rollup-darwin-x64@latest",
+      "@rollup/rollup-linux-x64-musl": "npm:@rollup/rollup-darwin-x64@latest"
+    }
   }
 }
