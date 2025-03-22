@@ -1,7 +1,7 @@
 module.exports = {
   content: [
-    "./src/**/*.{js,jsx,ts,tsx}",
-    "./public/index.html"
+    './src/**/*.{js,jsx,ts,tsx}',
+    './public/index.html'
   ],
   theme: {
     extend: {
@@ -11,16 +11,16 @@ module.exports = {
       fontFamily: {
         // Custom fonts can be added here
       }
-    },
+    }
   },
-  plugins: [require("daisyui")],
+  plugins: [require('daisyui')],
   daisyui: {
-    themes: ["light", "dark"], // You can specify themes or create custom ones
-    darkTheme: "dark",
+    themes: ['light', 'dark'], // You can specify themes or create custom ones
+    darkTheme: 'dark',
     base: true,
     styled: true,
     utils: true,
     logs: true,
-    rtl: false,
-  },
+    rtl: false
+  }
 }

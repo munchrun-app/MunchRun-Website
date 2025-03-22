@@ -1,24 +1,24 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react'
+import { Link } from 'react-router-dom'
 
-function FAQPage() {
-  const [activeCategory, setActiveCategory] = useState('all');
-  const [expandedItems, setExpandedItems] = useState({});
-  
+function FAQPage () {
+  const [activeCategory, setActiveCategory] = useState('all')
+  const [expandedItems, setExpandedItems] = useState({})
+
   // Toggle FAQ item expansion
   const toggleItem = (id) => {
     setExpandedItems(prev => ({
       ...prev,
       [id]: !prev[id]
-    }));
-  };
-  
+    }))
+  }
+
   // Filter items by category
   const filterItems = (items, category) => {
-    if (category === 'all') return items;
-    return items.filter(item => item.category === category);
-  };
-  
+    if (category === 'all') return items
+    return items.filter(item => item.category === category)
+  }
+
   // FAQ data with categories
   const faqItems = [
     {
@@ -87,85 +87,85 @@ function FAQPage() {
       question: 'When will MunchRun launch?',
       answer: 'MunchRun is currently in the early planning and development stages. We\'re working hard to build a platform that truly serves the needs of all participants. Sign up for our newsletter to be notified when we launch in your area.'
     }
-  ];
+  ]
 
-  const displayedItems = filterItems(faqItems, activeCategory);
+  const displayedItems = filterItems(faqItems, activeCategory)
 
   return (
-    <div className="container mx-auto py-20 px-4 mt-16">
-      <div className="text-center mb-12">
-        <h1 className="text-4xl font-bold mb-4">Frequently Asked Questions</h1>
-        <p className="text-lg max-w-2xl mx-auto">
+    <div className='container mx-auto py-20 px-4 mt-16'>
+      <div className='text-center mb-12'>
+        <h1 className='text-4xl font-bold mb-4'>Frequently Asked Questions</h1>
+        <p className='text-lg max-w-2xl mx-auto'>
           Find answers to common questions about MunchRun's food delivery service, driver opportunities, and restaurant partnerships.
         </p>
       </div>
-      
-      <div className="max-w-3xl mx-auto">
+
+      <div className='max-w-3xl mx-auto'>
         {/* FAQ Categories */}
-        <div className="tabs tabs-boxed justify-center mb-8">
-          <button 
+        <div className='tabs tabs-boxed justify-center mb-8'>
+          <button
             className={`tab ${activeCategory === 'all' ? 'tab-active' : ''}`}
             onClick={() => setActiveCategory('all')}
           >
             All Questions
           </button>
-          <button 
+          <button
             className={`tab ${activeCategory === 'customer' ? 'tab-active' : ''}`}
             onClick={() => setActiveCategory('customer')}
           >
             For Customers
           </button>
-          <button 
+          <button
             className={`tab ${activeCategory === 'driver' ? 'tab-active' : ''}`}
             onClick={() => setActiveCategory('driver')}
           >
             For Drivers
           </button>
-          <button 
+          <button
             className={`tab ${activeCategory === 'restaurant' ? 'tab-active' : ''}`}
             onClick={() => setActiveCategory('restaurant')}
           >
             For Restaurants
           </button>
         </div>
-        
+
         {/* FAQ Items */}
-        <div className="space-y-4">
+        <div className='space-y-4'>
           {displayedItems.map((item) => (
-            <div 
-              key={item.id} 
-              className="collapse collapse-arrow bg-base-200"
+            <div
+              key={item.id}
+              className='collapse collapse-arrow bg-base-200'
             >
-              <input 
-                type="checkbox" 
+              <input
+                type='checkbox'
                 id={item.id}
                 checked={expandedItems[item.id] || false}
                 onChange={() => toggleItem(item.id)}
-                className="peer"
+                className='peer'
               />
-              <label htmlFor={item.id} className="collapse-title text-xl font-medium cursor-pointer">
+              <label htmlFor={item.id} className='collapse-title text-xl font-medium cursor-pointer'>
                 {item.question}
               </label>
-              <div className="collapse-content">
+              <div className='collapse-content'>
                 <p>{item.answer}</p>
               </div>
             </div>
           ))}
         </div>
-        
+
         {/* Contact section */}
-        <div className="mt-12 p-6 bg-base-200 rounded-lg text-center">
-          <h2 className="text-2xl font-bold mb-4">Still have questions?</h2>
-          <p className="mb-6">
+        <div className='mt-12 p-6 bg-base-200 rounded-lg text-center'>
+          <h2 className='text-2xl font-bold mb-4'>Still have questions?</h2>
+          <p className='mb-6'>
             If you can't find the answer you're looking for, our team is here to help.
           </p>
-          <Link to="/contact" className="btn btn-primary">
+          <Link to='/contact' className='btn btn-primary'>
             Contact Us
           </Link>
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-export default FAQPage;
+export default FAQPage

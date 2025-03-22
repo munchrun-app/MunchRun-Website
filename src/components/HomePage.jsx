@@ -1,14 +1,14 @@
-import React from 'react';
-import HeroSection from './home/HeroSection';
-import VisionSection from './home/VisionSection';
-import CustomerComparison from './home/CustomerComparison';
-import HowItWorks from './home/HowItWorks';
-import ContactSection from './home/ContactSection';
-import FaqSection from './home/FaqSection';
+import React from 'react'
+import HeroSection from './home/HeroSection'
+import VisionSection from './home/VisionSection'
+import CustomerComparison from './home/CustomerComparison'
+import HowItWorks from './home/HowItWorks'
+import ContactSection from './home/ContactSection'
+import FaqSection from './home/FaqSection'
 
-function HomePage() {
+function HomePage () {
   return (
-    <main className="min-h-screen pt-24">
+    <main className='min-h-screen pt-24'>
       <HeroSection />
       <VisionSection />
       <CustomerComparison />
@@ -16,7 +16,7 @@ function HomePage() {
       <ContactSection />
       <FaqSection />
     </main>
-  );
+  )
 }
 
-export default HomePage;
+export default HomePage
